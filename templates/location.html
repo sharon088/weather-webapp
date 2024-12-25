@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif; 
+            background-color: #f0f0f0; 
+            margin: 0; 
+            padding: 20px; 
+            text-align: center; 
+        }
+        h1 {
+            color: darkslategrey; 
+        }
+        p {
+            color: gray ;
+            margin: 0 0 20px 0; 
+        }
+        form {
+            margin-top: 20px; 
+        }
+        input[type="text"] {
+            padding: 10px; 
+            border: 1px solid #a9b7c4; 
+            margin-right: 10px; 
+        }
+        input[type="submit"] {
+            padding: 10px 20px;
+            border: none;
+            background-color: rgb(52, 52, 122); 
+            color: white; 
+            border-radius: 4px;
+            cursor: pointer; 
+        }
+        h3 {
+            color: red; 
+            margin-top: 20px; 
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to the Weather Page!</h1>
+    <p>Here you can get the weather for a specific location using City or Country.<br>
+    Type a location (city or country, or both separated by a comma).
+    </p>
+    <form method="get" action="#">
+        <input type="text" name="location" id="location_text" placeholder="Enter location"</input>
+        <input type="submit" name="submit_btn" value="Submit"></input>
+    </form>
+    <h3>{{errorx}}</h3>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+	    background-color: {{ bg_color }};
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+        th{
+            background-color: gainsboro;
+        }
+        tr:nth-child(even)
+        {
+            background-color: whitesmoke;
+        }
+    </style>
+</head>
+{% if days_list %}
+<body>
+    <h1>Weather Forecast for {{ location }}</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Day</th>
+                <th>Morning Temperature (°C)</th>
+                <th>Evening Temperature (°C)</th>
+                <th>Humidity (%)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for day in days_list %}
+                <tr>
+                    <td>{{ day.curr_date }}</td>
+                    <td>{{ day.daily_temp }}</td>
+                    <td>{{ day.evening_temp }}</td>
+                    <td>{{ day.humidity }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {%endif%}
+
+    <button name="change_location" style="background-color: #f2f2f2;
+     border: 1px solid black;
+     margin-top: 6px;
+     cursor: pointer;"
+     onclick="window.location.href ='/';">Change Location <a></a></button>
+
+     <button name="download_image" style="background-color: aqua;
+     border: 1px solid black;
+     margin-top: 6px;
+     cursor: pointer;"
+     onclick="window.location.href='/download-image';">Download Image</button>
+
+     <button name="dynamo_db" style="background-color: aqua;
+     border: 1px solid black;
+     margin-top: 6px;
+     cursor: pointer;"
+     onclick="saveData(event)">Save to DB</button>
+
+
+     <form id="save-data-form">
+	    {% if days_list %}
+          <input type="hidden" name="location" value="{{ location }}">
+          <input type="hidden" name="date" value="{{ days_list[0].curr_date }}">
+	  <input type="hidden" name="forecast_data" value='{{ days_list | tojson | safe }}'>
+            {% endif %}
+     </form>
+
+    <h2>Download Search History</h2>
+    {% if history_files %}
+    <ul>
+        {% for file in history_files %}
+        <li>
+            {{ file }}
+            <button onclick="window.location.href='/download-history/{{ file }}';">Download</button>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No history files available.</p>
+    {% endif %}
+
+    <script>
+    function saveData(event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        const form = document.getElementById('save-data-form');
+        const formData = new FormData(form);
+
+        fetch('/dynamo-db', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                alert(data.message); // Show a success message
+            } else {
+                alert("Failed to save data.");
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("An error occurred while saving data.");
+        });
+    }
+    </script>
+</body>
+
+</html>
+
